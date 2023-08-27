@@ -63,11 +63,11 @@ public class TripDataExtractionService {
 
         return Trip.builder()
                 .startDateTime(individualTrips.get(FIRST_STOP_INDEX).getDateTime().toString())
-                .finishDateTime(individualTrips.size() == MAX_STOPS_PER_PAN ? individualTrips.get(SECOND_STOP_INDEX).getDateTime().toString() : EMPTY_STRING)
-                .durationInSeconds(individualTrips.size() == MAX_STOPS_PER_PAN ? Duration.between(individualTrips.get(FIRST_STOP_INDEX).getDateTime(),
+                .finishDateTime(individualTrips.size() == MAX_STOPS_PER_BUS_PER_PAN ? individualTrips.get(SECOND_STOP_INDEX).getDateTime().toString() : EMPTY_STRING)
+                .durationInSeconds(individualTrips.size() == MAX_STOPS_PER_BUS_PER_PAN ? Duration.between(individualTrips.get(FIRST_STOP_INDEX).getDateTime(),
                         individualTrips.get(SECOND_STOP_INDEX).getDateTime()).getSeconds() : 0L)
                 .fromStopId(individualTrips.get(FIRST_STOP_INDEX).getStopId())
-                .toStopId(individualTrips.size() == MAX_STOPS_PER_PAN ? individualTrips.get(SECOND_STOP_INDEX).getStopId() : EMPTY_STRING)
+                .toStopId(individualTrips.size() == MAX_STOPS_PER_BUS_PER_PAN ? individualTrips.get(SECOND_STOP_INDEX).getStopId() : EMPTY_STRING)
                 .chargeAmount(priceCalculator.calculateFare(sortedStopIds))
                 .companyId(individualTrips.get(FIRST_STOP_INDEX).getCompanyId()) // Assume both company Ids are same. No need to validate that
                 .busId(busId)

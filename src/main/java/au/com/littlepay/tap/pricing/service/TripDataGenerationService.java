@@ -23,7 +23,7 @@ public class TripDataGenerationService {
 
     public void generateTripData(List<Trip> trips) {
 
-        FileWriter outputFile = null;
+        FileWriter outputFile;
         try {
             outputFile = new FileWriter(outputFileName);
             CSVWriter csvWriter = new CSVWriter(outputFile);

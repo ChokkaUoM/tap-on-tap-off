@@ -5,7 +5,7 @@ public class Constants {
     public static final int FIRST_STOP_INDEX = 0;
     public static final int SECOND_STOP_INDEX = 1;
 
-    public static final int MAX_STOPS_PER_PAN = 2;
+    public static final int MAX_STOPS_PER_BUS_PER_PAN = 2;
     public static final String EMPTY_STRING = "";
     public static final String SEPARATOR = ",";
     public static final String COMPOSITE_KEY_SEPARATOR = ":";

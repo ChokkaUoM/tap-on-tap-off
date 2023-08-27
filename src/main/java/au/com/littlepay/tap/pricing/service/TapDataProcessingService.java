@@ -16,8 +16,6 @@ public class TapDataProcessingService {
 
     private final TapDataRepository tapDataRepository;
 
-    //TODO Create a validator to validate TapDataInput
-
     public void processTapData(String[] data) {
         TapDataInput tapDataInput = tapDataInputMapper.mapTapData(data);
         tapDataRepository.save(tapDataInput);
