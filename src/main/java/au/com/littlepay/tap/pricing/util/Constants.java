@@ -7,8 +7,8 @@ public class Constants {
 
     public static final int MAX_STOPS_PER_PAN = 2;
     public static final String EMPTY_STRING = "";
-
     public static final String SEPARATOR = ",";
+    public static final String COMPOSITE_KEY_SEPARATOR = ":";
 
     public static final String[] HEADER = {"Started", "Finished", "DurationSecs", "FromStopId",
             "ToSTopId", "ChargeAmount", "CompanyId", "BusId", "PAN", "Status"};

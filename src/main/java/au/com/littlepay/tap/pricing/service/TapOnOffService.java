@@ -1,6 +1,5 @@
 package au.com.littlepay.tap.pricing.service;
 
-import au.com.littlepay.tap.pricing.exceptions.InvalidFileException;
 import au.com.littlepay.tap.pricing.model.Trip;
 import au.com.littlepay.tap.pricing.repository.TapDataRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +51,7 @@ public class TapOnOffService {
 
         } catch (Exception e) {
             log.error("Exception occurred", e);
-            throw new InvalidFileException("Invalid file location provided");
+            throw new RuntimeException("Exception occurred while processing the request");
         }
     }
 }

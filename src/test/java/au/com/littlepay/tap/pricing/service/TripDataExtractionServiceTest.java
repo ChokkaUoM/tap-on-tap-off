@@ -49,13 +49,13 @@ class TripDataExtractionServiceTest {
     void extractTripData() {
         String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
-        Map<String, List<TapDataInput>> mapByPAN = new HashMap<>();
-        mapByPAN.put("5500005555555559" , Arrays.asList(TapDataInput.builder().id("1").tapType("ON").stopId("Stop1")
+        Map<String, List<TapDataInput>> mapByBusIDAndPAN = new HashMap<>();
+        mapByBusIDAndPAN.put("Bus36:5500005555555559" , Arrays.asList(TapDataInput.builder().id("1").tapType("ON").stopId("Stop1").busId("Bus36")
                         .pan("5500005555555559").dateTime(LocalDateTime.parse("22-01-2023 13:00:00", dateTimeFormatter)).build(),
-                TapDataInput.builder().id("2").tapType("OFF").stopId("Stop3").pan("5500005555555559")
+                TapDataInput.builder().id("2").tapType("OFF").stopId("Stop3").busId("Bus36").pan("5500005555555559")
                         .dateTime(LocalDateTime.parse("22-01-2023 13:05:00", dateTimeFormatter)).build()));
 
-        when(tapDataRepository.getMapByPAN()).thenReturn(mapByPAN);
+        when(tapDataRepository.getMapByBusIDAndPAN()).thenReturn(mapByBusIDAndPAN);
         when(priceCalculator.calculateFare(any())).thenReturn(new BigDecimal("13"));
         when(statusChecker.getStatus(any())).thenReturn(TripStatus.COMPLETED.toString());
 
@@ -66,6 +66,38 @@ class TripDataExtractionServiceTest {
         Assertions.assertEquals(trips.get(0).getPan(), "5500005555555559");
         Assertions.assertEquals(trips.get(0).getChargeAmount(), new BigDecimal("13"));
         Assertions.assertEquals(trips.get(0).getStatus(), TripStatus.COMPLETED.toString());
+
+    }
+
+    @Test
+    void extractTripDataWithSamePanMultipleBusIds() {
+        String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+        Map<String, List<TapDataInput>> mapByBusIDAndPAN = new HashMap<>();
+        mapByBusIDAndPAN.put("Bus36:5500005555555559" , Arrays.asList(TapDataInput.builder().id("1").tapType("ON").stopId("Stop1").busId("Bus36")
+                        .pan("5500005555555559").dateTime(LocalDateTime.parse("22-01-2023 13:00:00", dateTimeFormatter)).build(),
+                TapDataInput.builder().id("2").tapType("OFF").stopId("Stop2").busId("Bus36").pan("5500005555555559")
+                        .dateTime(LocalDateTime.parse("22-01-2023 13:05:00", dateTimeFormatter)).build()));
+        mapByBusIDAndPAN.put("Bus37:5500005555555559" , Arrays.asList(TapDataInput.builder().id("3").tapType("ON").stopId("Stop2").busId("Bus37")
+                        .pan("5500005555555559").dateTime(LocalDateTime.parse("22-01-2023 13:00:00", dateTimeFormatter)).build(),
+                TapDataInput.builder().id("4").tapType("OFF").stopId("Stop3").busId("Bus37").pan("5500005555555559")
+                        .dateTime(LocalDateTime.parse("22-01-2023 13:05:00", dateTimeFormatter)).build()));
+        mapByBusIDAndPAN.put("Bus38:4111111111111111" , Arrays.asList(TapDataInput.builder().id("5").tapType("ON").stopId("Stop2").busId("Bus38")
+                        .pan("4111111111111111").dateTime(LocalDateTime.parse("22-01-2023 13:00:00", dateTimeFormatter)).build(),
+                TapDataInput.builder().id("6").tapType("OFF").stopId("Stop3").busId("Bus38").pan("4111111111111111")
+                        .dateTime(LocalDateTime.parse("22-01-2023 13:05:00", dateTimeFormatter)).build()));
+
+        when(tapDataRepository.getMapByBusIDAndPAN()).thenReturn(mapByBusIDAndPAN);
+        when(priceCalculator.calculateFare(any())).thenReturn(new BigDecimal("13"));
+        when(statusChecker.getStatus(any())).thenReturn(TripStatus.COMPLETED.toString());
+
+        List<Trip> trips = tripDataExtractionService.extractTripData();
+
+        Assertions.assertNotNull(trips);
+        Assertions.assertEquals(trips.size(), 3);
+        Assertions.assertEquals(trips.get(0).getPan(), "5500005555555559");
+        Assertions.assertEquals(trips.get(1).getPan(), "5500005555555559");
+        Assertions.assertEquals(trips.get(2).getPan(), "4111111111111111");
 
     }
 }

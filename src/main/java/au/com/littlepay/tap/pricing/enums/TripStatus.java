@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum TripStatus {
 
     COMPLETED("COMPLETED"),
-    INCOMPLETE("ÏNCOMPLETE"),
+    INCOMPLETE("INCOMPLETE"),
     CANCELLED("CANCELLED"),
     INVALID("INVALID");
 

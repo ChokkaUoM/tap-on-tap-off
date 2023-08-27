@@ -31,17 +31,15 @@ public class TripDataExtractionService {
 
     //Assume a user can have maximum of two stopIds and user will use the same bus for travel
 
-    private final Comparator<TapDataInput> compareByDateAndPAN = Comparator.comparing(TapDataInput::getDateTime)
-            .thenComparing(TapDataInput::getPan);
+    private final Comparator<TapDataInput> compareByDate = Comparator.comparing(TapDataInput::getDateTime);
 
 
     public List<Trip> extractTripData() {
 
-        Map<String, List<TapDataInput>> mapByPAN = tapDataRepository.getMapByPAN();
+        Map<String, List<TapDataInput>> mapByBusIDAndPAN = tapDataRepository.getMapByBusIDAndPAN();
         List<Trip> trips = new ArrayList<>();
 
-        mapByPAN.entrySet().forEach(entry -> {
-
+        mapByBusIDAndPAN.entrySet().forEach(entry -> {
             Trip trip = populateTrip(entry.getValue(), entry.getKey());
             trips.add(trip);
 
@@ -50,12 +48,16 @@ public class TripDataExtractionService {
         return trips;
     }
 
-    private Trip populateTrip(List<TapDataInput> tapDataInputs, String pan) {
-        List<TapDataInput> individualTrips = tapDataInputs.stream().sorted(compareByDateAndPAN).collect(Collectors.toList());
+    private Trip populateTrip(List<TapDataInput> tapDataInputs, String compositeKey) {
+
+        String busId = compositeKey.split(COMPOSITE_KEY_SEPARATOR)[0];
+        String pan = compositeKey.split(COMPOSITE_KEY_SEPARATOR)[1];
+        //Already we are getting same bus same PAN trips. No need to use PAN and Bus id for sorting.
+        List<TapDataInput> individualTrips = tapDataInputs.stream().sorted(compareByDate).collect(Collectors.toList());
         List<String> sortedStopIds = individualTrips.stream().map(TapDataInput::getStopId).sorted().collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(individualTrips)) {
-            log.error("No individual Trip details found for PAN {}", pan);
+            log.error("No individual Trip details found for PAN {} busId {}", pan, busId);
             throw new InvalidDataException("Invalid Trip details. Please check the input file");
         }
 
@@ -68,8 +70,8 @@ public class TripDataExtractionService {
                 .toStopId(individualTrips.size() == MAX_STOPS_PER_PAN ? individualTrips.get(SECOND_STOP_INDEX).getStopId() : EMPTY_STRING)
                 .chargeAmount(priceCalculator.calculateFare(sortedStopIds))
                 .companyId(individualTrips.get(FIRST_STOP_INDEX).getCompanyId()) // Assume both company Ids are same. No need to validate that
-                .busId(individualTrips.get(FIRST_STOP_INDEX).getBusId()) // Assume user will travel through the same bus
-                .pan(individualTrips.get(FIRST_STOP_INDEX).getPan())
+                .busId(busId)
+                .pan(pan)
                 .status(statusChecker.getStatus(individualTrips))
                 .build();
     }

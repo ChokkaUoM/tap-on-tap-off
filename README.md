@@ -6,7 +6,13 @@ Tap on Tap off system
 - [JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 - [Maven 3](https://maven.apache.org)
 
-## Run application locally
+## Build the application
+
+```shell
+mvn clean install
+```
+
+## Run the application locally
 
 There are mainly two ways you can run the application.
 
@@ -19,9 +25,10 @@ mvn spring-boot:run
 
 ### Assumptions
 
-- Maximum of two stopIds available for any traveller
-- Traveller will travel only on a single bus. That means same bus ID will be available for a PAN.
-- Traveller can have only one trip. There is one to one mapping between trip to PAN.
+- Maximum of two stopIds available for any trip on the same bus.
+- Traveller can travel in any number of buses. There will be a separate trip entry for each bus travel.
+- Traveller can have multiple trips. There is many to one mapping between trip to PAN.
+- If the traveller is using same PAN and travel in the same bus, assume company Id is also same.
 
 ### Input
 
