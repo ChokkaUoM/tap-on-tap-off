@@ -10,7 +10,7 @@ public enum TripStatus {
     CANCELLED("CANCELLED"),
     INVALID("INVALID");
 
-    private final  String name;
+    private final String name;
 
     TripStatus(String name) {
         this.name = name;

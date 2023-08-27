@@ -27,6 +27,7 @@ public class BusFareRepository implements TransportFareRepository {
         fareMap.put(STOP2_STOP3, Fare.builder().amount(new BigDecimal(STOP2_STOP3_FARE)).currency(CURRENCY).build());
         fareMap.put(STOP1_STOP3, Fare.builder().amount(new BigDecimal(STOP1_STOP3_FARE)).currency(CURRENCY).build());
     }
+
     @Override
     public Map<String, Fare> getCharges() {
 

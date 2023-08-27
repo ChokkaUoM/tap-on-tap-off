@@ -26,10 +26,10 @@ public class PriceCalculator {
 
         BigDecimal fare = BigDecimal.ZERO;
 
-        if(CollectionUtils.isEmpty(stopIds) || stopIds.size() == 0) {
+        if (CollectionUtils.isEmpty(stopIds) || stopIds.size() == 0) {
             log.error("No stopId found");
             throw new InvalidDataException("No stop Id found in the data");
-        } else if(stopIds.size() == 2) {
+        } else if (stopIds.size() == 2) {
             String stopIdKey = String.format("%s%s", stopIds.get(0), stopIds.get(1));
             fare = Optional.ofNullable(transportFareRepository.getCharges().get(stopIdKey))
                     .orElse(Fare.builder().amount(BigDecimal.ZERO).build()).getAmount();
@@ -47,7 +47,7 @@ public class PriceCalculator {
 
     private BigDecimal calculateHighestFare(List<String> keys) {
         List<BigDecimal> fares = new ArrayList<>();
-        keys.stream().forEach(key-> {
+        keys.stream().forEach(key -> {
             fares.add(transportFareRepository.getCharges().get(key).getAmount());
         });
 

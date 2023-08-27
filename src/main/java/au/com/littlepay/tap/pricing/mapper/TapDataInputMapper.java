@@ -11,13 +11,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
+import static au.com.littlepay.tap.pricing.util.Constants.DATE_FORMAT;
+import static au.com.littlepay.tap.pricing.util.Constants.EMPTY_STRING;
+
 
 @Slf4j
 @Component
 public class TapDataInputMapper {
-
-    private final String EMPTY_STRING = "";
-    private final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
     @Value("${taps.input.field_size}")
     private int FIELD_SIZE;
@@ -48,7 +48,7 @@ public class TapDataInputMapper {
 
     public TapDataInput mapTapData(String[] fields) {
 
-        if(Objects.isNull(fields) || fields.length != FIELD_SIZE) {
+        if (Objects.isNull(fields) || fields.length != FIELD_SIZE) {
             log.error("Invalid data received in the file");
             throw new InvalidDataException("Invalid Data in the file");
         }

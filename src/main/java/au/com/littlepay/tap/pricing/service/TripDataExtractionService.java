@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static au.com.littlepay.tap.pricing.util.Constants.*;
+
 @Slf4j
 @Component
 @AllArgsConstructor
@@ -28,11 +30,6 @@ public class TripDataExtractionService {
     private final StatusChecker statusChecker;
 
     //Assume a user can have maximum of two stopIds and user will use the same bus for travel
-    private static final int FIRST_STOP_INDEX = 0;
-    private static final int SECOND_STOP_INDEX = 1;
-
-    private static final int MAX_STOPS_PER_PAN = 2;
-    private static final String EMPTY_STRING = "";
 
     private final Comparator<TapDataInput> compareByDateAndPAN = Comparator.comparing(TapDataInput::getDateTime)
             .thenComparing(TapDataInput::getPan);
@@ -68,7 +65,7 @@ public class TripDataExtractionService {
                 .durationInSeconds(individualTrips.size() == MAX_STOPS_PER_PAN ? Duration.between(individualTrips.get(FIRST_STOP_INDEX).getDateTime(),
                         individualTrips.get(SECOND_STOP_INDEX).getDateTime()).getSeconds() : 0L)
                 .fromStopId(individualTrips.get(FIRST_STOP_INDEX).getStopId())
-                .toStopId(individualTrips.size() ==  MAX_STOPS_PER_PAN? individualTrips.get(SECOND_STOP_INDEX).getStopId() : EMPTY_STRING)
+                .toStopId(individualTrips.size() == MAX_STOPS_PER_PAN ? individualTrips.get(SECOND_STOP_INDEX).getStopId() : EMPTY_STRING)
                 .chargeAmount(priceCalculator.calculateFare(sortedStopIds))
                 .companyId(individualTrips.get(FIRST_STOP_INDEX).getCompanyId()) // Assume both company Ids are same. No need to validate that
                 .busId(individualTrips.get(FIRST_STOP_INDEX).getBusId()) // Assume user will travel through the same bus

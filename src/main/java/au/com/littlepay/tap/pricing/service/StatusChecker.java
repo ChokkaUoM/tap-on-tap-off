@@ -18,9 +18,9 @@ public class StatusChecker {
         List<String> tapTypes = individualTrips.stream().map(TapDataInput::getTapType).distinct().collect(Collectors.toList());
         List<String> stopIds = individualTrips.stream().map(TapDataInput::getStopId).distinct().collect(Collectors.toList());
 
-        if(tapTypes.size() == 2 && stopIds.size() == 2) {
+        if (tapTypes.size() == 2 && stopIds.size() == 2) {
             status = TripStatus.COMPLETED;
-        } else if(tapTypes.size() == 2 && stopIds.size() == 1) {
+        } else if (tapTypes.size() == 2 && stopIds.size() == 1) {
             status = TripStatus.CANCELLED;
         } else {
             status = TripStatus.INCOMPLETE;

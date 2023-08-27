@@ -18,6 +18,7 @@ public class CSVFileReader implements FileReaderService {
 
 
     private final TapDataProcessingService tapDataProcessingService;
+
     @Override
     public void readFile(String filePath) throws FileNotFoundException {
         FileReader fileReader = new FileReader(filePath);
@@ -28,7 +29,7 @@ public class CSVFileReader implements FileReaderService {
         try {
             String[] nextLine;
 
-            while((nextLine = csvReader.readNext()) != null ) {
+            while ((nextLine = csvReader.readNext()) != null) {
                 tapDataProcessingService.processTapData(nextLine);
             }
 

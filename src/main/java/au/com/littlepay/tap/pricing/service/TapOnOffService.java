@@ -23,10 +23,14 @@ public class TapOnOffService {
 
     private final TripDataExtractionService tripDataExtractionService;
 
-    //TODO Remove this
+    private final TripDataGenerationService tripDataGenerationService;
+
     private final TapDataRepository tapDataRepository;
 
-    @Value("${taps.input.field_name}")
+    @Value("${taps.debug.enabled}")
+    private boolean isDebugEnabled;
+
+    @Value("${taps.input.file_name}")
     String fileName;
 
     public void start() {
@@ -34,11 +38,17 @@ public class TapOnOffService {
             Resource resource = resourceLoader.getResource(String.format("classpath:%s", fileName));
             fileReaderService.readFile(resource.getFile().getAbsolutePath());
 
-            //TODO Remove this
-            tapDataRepository.findAll().stream().forEach(System.out::println);
+            if (isDebugEnabled) {
+                tapDataRepository.findAll().stream().forEach(System.out::println);
+            }
 
             List<Trip> trips = tripDataExtractionService.extractTripData();
-            trips.stream().forEach(System.out::println);
+
+            if (isDebugEnabled) {
+                trips.stream().forEach(System.out::println);
+            }
+
+            tripDataGenerationService.generateTripData(trips);
 
         } catch (Exception e) {
             log.error("Exception occurred", e);
